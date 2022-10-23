@@ -1,5 +1,6 @@
 package edu.tcu.quynhtdong.quiz
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,10 +9,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.material.textfield.TextInputEditText
+import java.io.Serializable
 
 class QuestionActivity: AppCompatActivity(), View.OnClickListener{
     private var questions = Constants.getQuestions()
@@ -22,6 +24,9 @@ class QuestionActivity: AppCompatActivity(), View.OnClickListener{
     private var correctAnswers = 0
     private var correctOpt = -1
     private var username = "username"
+    private var revealed = arrayListOf<String>()
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
@@ -29,7 +34,16 @@ class QuestionActivity: AppCompatActivity(), View.OnClickListener{
         username = intent.getStringExtra("username").toString()
         correctAnswers = intent.getIntExtra("correct", 0)
         questionIdx = intent.getIntExtra("questionIdx", 0)
-
+        val revealed = intent.getStringArrayExtra("revealed")
+//        if (revealed != null) {
+//            for(answer in revealed){
+//                if(questions[questionIdx].correctAnswer == answer){
+//                    questionIdx++
+//                }
+//            }
+//        }
+        findViewById<ProgressBar>(R.id.progress_bar).max = 10
+        findViewById<ProgressBar>(R.id.progress_bar).progress = questionIdx + 1
         findViewById<TextView>(R.id.progress_tv).text = getString(R.string.progress, questionIdx + 1, questions.size)
         findViewById<TextView>(R.id.question_tv).text = questions[questionIdx].question
         findViewById<ImageView>(R.id.flag_iv).setImageResource(questions[questionIdx].image)
@@ -107,6 +121,7 @@ class QuestionActivity: AppCompatActivity(), View.OnClickListener{
 
     override fun onClick(view: View?){
         if(view == findViewById<TextView>(R.id.submit_btn)){
+
             if(!answerRevealed){
                 var correctOptionTv = optionTvs[correctOpt]
                 answerView(correctOptionTv)
@@ -121,9 +136,11 @@ class QuestionActivity: AppCompatActivity(), View.OnClickListener{
 
     private fun goToQuestion(){
         val intent = Intent(this, QuestionActivity::class.java)
+        revealed.add(optionTvs[correctOpt].text.toString())
         intent.putExtra("correct", correctAnswers)
         intent.putExtra("questionIdx", questionIdx + 1)
         intent.putExtra("username", username)
+        intent.putExtra("revealed", revealed)
         startActivity(intent)
         finish()
     }

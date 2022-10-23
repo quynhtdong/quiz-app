@@ -2,5 +2,6 @@
     <string name="app_name">Quiz</string>
     <string name="progress">%d/%d</string>
     <string name="goodluck_name">Good luck next time, %s!</string>
+    <string name="congrats_name">Congratulations, %s!</string>
     <string name="score">Your score is %d out of 10.</string>
 </resources>
