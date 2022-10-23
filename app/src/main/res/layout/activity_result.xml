@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/ic_launcher_background">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Result"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <ImageView
+        android:id="@+id/flag_iv"
+        android:layout_width="140sp"
+        android:layout_height="140sp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="sweat face image"
+        android:src="@drawable/ic_sweat_face">
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/goodluck_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Good luck next time, %s!"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/score_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:text="Your score is %d out of 10."/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Try Again"
+        android:background="@color/purple_700"
+        />
+
+
+
+</LinearLayout>
