@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import java.io.Serializable
 
 class QuestionActivity: AppCompatActivity(), View.OnClickListener{
-    private var questions = Constants.getQuestions()
+    private var questions = Constants.getQuestions().shuffled()
     private var questionIdx = 0
     private val optionTvs = mutableListOf<TextView>()
     private var selectedOptionIdx = -1
@@ -24,7 +24,6 @@ class QuestionActivity: AppCompatActivity(), View.OnClickListener{
     private var correctAnswers = 0
     private var correctOpt = -1
     private var username = "username"
-    private var revealed = arrayListOf<String>()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,16 +31,9 @@ class QuestionActivity: AppCompatActivity(), View.OnClickListener{
         setContentView(R.layout.activity_question)
 
         username = intent.getStringExtra("username").toString()
-        correctAnswers = intent.getIntExtra("correct", 0)
-        questionIdx = intent.getIntExtra("questionIdx", 0)
-        val revealed = intent.getStringArrayExtra("revealed")
-//        if (revealed != null) {
-//            for(answer in revealed){
-//                if(questions[questionIdx].correctAnswer == answer){
-//                    questionIdx++
-//                }
-//            }
-//        }
+//        correctAnswers = intent.getIntExtra("correct", 0)
+//        questionIdx = intent.getIntExtra("questionIdx", 0)
+
         findViewById<ProgressBar>(R.id.progress_bar).max = 10
         findViewById<ProgressBar>(R.id.progress_bar).progress = questionIdx + 1
         findViewById<TextView>(R.id.progress_tv).text = getString(R.string.progress, questionIdx + 1, questions.size)
@@ -135,14 +127,46 @@ class QuestionActivity: AppCompatActivity(), View.OnClickListener{
     }
 
     private fun goToQuestion(){
-        val intent = Intent(this, QuestionActivity::class.java)
-        revealed.add(optionTvs[correctOpt].text.toString())
-        intent.putExtra("correct", correctAnswers)
-        intent.putExtra("questionIdx", questionIdx + 1)
-        intent.putExtra("username", username)
-        intent.putExtra("revealed", revealed)
-        startActivity(intent)
-        finish()
+
+        answerRevealed = false
+        selectedOptionIdx = -1
+        questionIdx++
+        optionTvs.removeAll(optionTvs)
+        findViewById<ProgressBar>(R.id.progress_bar).max = 10
+        findViewById<ProgressBar>(R.id.progress_bar).progress = questionIdx + 1
+        findViewById<TextView>(R.id.progress_tv).text = getString(R.string.progress, questionIdx + 1, questions.size)
+        findViewById<TextView>(R.id.question_tv).text = questions[questionIdx].question
+        findViewById<ImageView>(R.id.flag_iv).setImageResource(questions[questionIdx].image)
+        findViewById<Button>(R.id.submit_btn).text = "SUBMIT"
+        val optionLl = findViewById<LinearLayout>(R.id.option_ll)
+        optionLl.removeAllViews()
+
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        layoutParams.topMargin = dpToPx(16)
+
+        for(i in questions[questionIdx].options.indices){
+            val optionTv = TextView(this)
+            optionTv.layoutParams = layoutParams
+            optionTv.gravity = Gravity.CENTER
+            optionTv.setPadding(dpToPx(16),dpToPx(16),dpToPx(16),dpToPx(16))
+            optionTv.textSize = 16F
+            optionTv.text = questions[questionIdx].options[i]
+            optionTv.setBackgroundResource(R.drawable.default_option_bg)
+
+            optionLl.addView(optionTv)
+            optionTvs.add(optionTv)
+            if (questions[questionIdx].options[i].equals(questions[questionIdx].correctAnswer)){
+                correctOpt = i
+            }
+            optionTv.setOnClickListener{
+                selectedOptionView(optionTv)
+                selectedOptionIdx = i
+            }
+        }
+
     }
 
     private fun goToFinish(){
